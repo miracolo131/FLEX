@@ -86,6 +86,7 @@
         self.selectedViewDescriptionLabel = [[UILabel alloc] init];
         self.selectedViewDescriptionLabel.backgroundColor = [UIColor clearColor];
         self.selectedViewDescriptionLabel.font = [[self class] descriptionLabelFont];
+        self.selectedViewDescriptionLabel.numberOfLines = 0;
         [self.selectedViewDescriptionContainer addSubview:self.selectedViewDescriptionLabel];
     }
     return self;
@@ -127,7 +128,7 @@
     const CGFloat kDescriptionContainerHeight = [[self class] descriptionContainerHeight];
     
     CGRect descriptionContainerFrame = CGRectZero;
-    descriptionContainerFrame.size.height = kDescriptionContainerHeight;
+    descriptionContainerFrame.size.height = kDescriptionContainerHeight * 3;
     descriptionContainerFrame.origin.y = CGRectGetMaxY(self.bounds) - kDescriptionContainerHeight;
     descriptionContainerFrame.size.width = self.bounds.size.width;
     self.selectedViewDescriptionContainer.frame = descriptionContainerFrame;
@@ -144,7 +145,7 @@
     // Selected View Description
     CGRect descriptionLabelFrame = CGRectZero;
     CGFloat descriptionOriginX = CGRectGetMaxX(selectedViewColorFrame) + kHorizontalPadding;
-    descriptionLabelFrame.size.height = kDescriptionLabelHeight;
+    descriptionLabelFrame.size.height = kDescriptionLabelHeight * 3;
     descriptionLabelFrame.origin.x = descriptionOriginX;
     descriptionLabelFrame.origin.y = kDescriptionVerticalPadding;
     descriptionLabelFrame.size.width = CGRectGetMaxX(self.selectedViewDescriptionContainer.bounds) - kHorizontalPadding - descriptionOriginX;

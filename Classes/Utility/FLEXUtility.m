@@ -29,14 +29,57 @@
         description = [description stringByAppendingFormat:@" (%@)", viewControllerDescription];
     }
     
-    if (includeFrame) {
-        description = [description stringByAppendingFormat:@" %@", [self stringForCGRect:view.frame]];
-    }
-    
     if ([view.accessibilityLabel length] > 0) {
-        description = [description stringByAppendingFormat:@" · %@", view.accessibilityLabel];
+        description = [description stringByAppendingFormat:@"%@", view.accessibilityLabel];
     }
     
+    if ([self descriptionForView:view inTarget:[self superClassForView:view]].length > 0) {
+        description = [description stringByAppendingFormat:@"\n%@", [self descriptionForView:view inTarget:[self superClassForView:view]]];
+    } else if ([self descriptionForView:view inTarget:[self superControllerForView:view]].length > 0) {
+        description = [description stringByAppendingFormat:@"\n%@", [self descriptionForView:view inTarget:[self superControllerForView:view]]];
+    }
+    
+    if (includeFrame) {
+        description = [description stringByAppendingFormat:@"\n%@", [self stringForCGRect:view.frame]];
+    }
+    
+    return description;
+}
+
++ (id)superControllerForView:(UIView *)view {
+    UIViewController *vc = nil;
+    for (UIView* next = [view superview]; next; next = next.superview) {
+        UIResponder *nextResponder = [next nextResponder];
+        if ([nextResponder isKindOfClass:[UIViewController class]]) {
+            vc = (UIViewController *)nextResponder;
+            break;
+        }
+    }
+    return vc;
+}
+
++ (id)superClassForView:(UIView *)view {
+    return view.superview;
+}
+
++ (NSString *)descriptionForView:(UIView *)view inTarget:(id)target{
+    
+    NSString *description = nil;
+    unsigned int numIvars = 0;
+    Ivar * ivars = class_copyIvarList([target class], &numIvars);
+    for(int i = 0; i < numIvars; i++) {
+        Ivar thisIvar = ivars[i];
+        const char *type = ivar_getTypeEncoding(thisIvar);
+        NSString *stringType =  [NSString stringWithCString:type encoding:NSUTF8StringEncoding];
+        if (![stringType hasPrefix:@"@"]) {
+            continue;
+        }
+        if ((object_getIvar(target, thisIvar) == view)) {
+            description = [NSString stringWithUTF8String:ivar_getName(thisIvar)];
+            break;
+        }
+    }
+    free(ivars);
     return description;
 }
 
