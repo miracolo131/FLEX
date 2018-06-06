@@ -33,10 +33,8 @@
         description = [description stringByAppendingFormat:@"%@", view.accessibilityLabel];
     }
     
-    if ([self descriptionForView:view inTarget:[self superClassForView:view]].length > 0) {
-        description = [description stringByAppendingFormat:@"\n%@", [self descriptionForView:view inTarget:[self superClassForView:view]]];
-    } else if ([self descriptionForView:view inTarget:[self superControllerForView:view]].length > 0) {
-        description = [description stringByAppendingFormat:@"\n%@", [self descriptionForView:view inTarget:[self superControllerForView:view]]];
+    if ([self nameForView:view].length > 0) {
+        description = [description stringByAppendingFormat:@"\n%@", [self nameForView:view]];
     }
     
     if (includeFrame) {
@@ -46,21 +44,35 @@
     return description;
 }
 
-+ (id)superControllerForView:(UIView *)view {
-    UIViewController *vc = nil;
-    for (UIView* next = [view superview]; next; next = next.superview) {
-        UIResponder *nextResponder = [next nextResponder];
-        if ([nextResponder isKindOfClass:[UIViewController class]]) {
-            vc = (UIViewController *)nextResponder;
-            break;
++ (NSString *)nameForView:(UIView *)view {
+    NSString *description = nil;
+    NSString *viewName = [self descriptionForView:view inTarget:view.superview];
+    if (viewName.length > 0) {
+        NSString *superViewName = [[view.superview class] description];
+        NSString *viewName = [self descriptionForView:view inTarget:view.superview];
+        description = [NSString stringWithFormat:@"%@.%@", superViewName, viewName];
+        
+    } else {
+        
+        UIViewController *vc = nil;
+        for (UIView* next = [view superview]; next; next = next.superview) {
+            UIResponder *nextResponder = [next nextResponder];
+            if ([nextResponder isKindOfClass:[UIViewController class]]) {
+                vc = (UIViewController *)nextResponder;
+                description = [[vc class] description];
+                viewName = [self descriptionForView:view inTarget:vc];
+                if (viewName.length > 0) {
+                    description = [NSString stringWithFormat:@"%@.%@", description, viewName];
+                }
+                break;
+            }
         }
     }
-    return vc;
+    
+    return description;
 }
 
-+ (id)superClassForView:(UIView *)view {
-    return view.superview;
-}
+
 
 + (NSString *)descriptionForView:(UIView *)view inTarget:(id)target{
     
