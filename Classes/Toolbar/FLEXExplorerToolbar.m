@@ -17,7 +17,7 @@
 @property (nonatomic, strong, readwrite) FLEXToolbarItem *moveItem;
 @property (nonatomic, strong, readwrite) FLEXToolbarItem *globalsItem;
 @property (nonatomic, strong, readwrite) FLEXToolbarItem *closeItem;
-@property (nonatomic, strong, readwrite) FLEXToolbarItem *hierarchyItem;
+@property (nonatomic, strong, readwrite) FLEXToolbarItem *networkItem;
 @property (nonatomic, strong, readwrite) UIView *dragHandle;
 
 @property (nonatomic, strong) UIImageView *dragHandleImageView;
@@ -46,15 +46,15 @@
         self.dragHandleImageView = [[UIImageView alloc] initWithImage:dragHandle];
         [self.dragHandle addSubview:self.dragHandleImageView];
         
-        UIImage *globalsIcon = [FLEXResources globeIcon];
+        UIImage *globalsIcon = [FLEXResources listIcon];
         self.globalsItem = [FLEXToolbarItem toolbarItemWithTitle:@"menu" image:globalsIcon];
         [self addSubview:self.globalsItem];
         [toolbarItems addObject:self.globalsItem];
         
-        UIImage *listIcon = [FLEXResources listIcon];
-        self.hierarchyItem = [FLEXToolbarItem toolbarItemWithTitle:@"views" image:listIcon];
-        [self addSubview:self.hierarchyItem];
-        [toolbarItems addObject:self.hierarchyItem];
+        UIImage *listIcon = [FLEXResources globeIcon];
+        self.networkItem = [FLEXToolbarItem toolbarItemWithTitle:@"network" image:listIcon];
+        [self addSubview:self.networkItem];
+        [toolbarItems addObject:self.networkItem];
         
         UIImage *selectIcon = [FLEXResources selectIcon];
         self.selectItem = [FLEXToolbarItem toolbarItemWithTitle:@"select" image:selectIcon];

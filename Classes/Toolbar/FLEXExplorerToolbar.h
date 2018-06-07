@@ -16,9 +16,9 @@
 /// Users of the toolbar can configure the enabled/selected state and event targets/actions.
 @property (nonatomic, strong, readonly) FLEXToolbarItem *selectItem;
 
-/// Toolbar item for presenting a list with the view hierarchy.
+/// Toolbar item for presenting a list with the network history.
 /// Users of the toolbar can configure the enabled state and event targets/actions.
-@property (nonatomic, strong, readonly) FLEXToolbarItem *hierarchyItem;
+@property (nonatomic, strong, readonly) FLEXToolbarItem *networkItem;
 
 /// Toolbar item for moving views.
 /// Users of the toolbar can configure the enabled/selected state and event targets/actions.

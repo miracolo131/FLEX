@@ -360,7 +360,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)setupToolbarActions
 {
     [self.explorerToolbar.selectItem addTarget:self action:@selector(selectButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self.explorerToolbar.hierarchyItem addTarget:self action:@selector(hierarchyButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [self.explorerToolbar.networkItem addTarget:self action:@selector(networkButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.explorerToolbar.moveItem addTarget:self action:@selector(moveButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.explorerToolbar.globalsItem addTarget:self action:@selector(globalsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.explorerToolbar.closeItem addTarget:self action:@selector(closeButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
@@ -371,9 +371,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self toggleSelectTool];
 }
 
-- (void)hierarchyButtonTapped:(FLEXToolbarItem *)sender
+- (void)networkButtonTapped:(FLEXToolbarItem *)sender
 {
-    [self toggleViewsTool];
+    [self toggleNetworkTool];
 }
 
 - (NSArray *)allViewsInHierarchy
@@ -825,6 +825,27 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             FLEXHierarchyTableViewController *hierarchyTVC = [[FLEXHierarchyTableViewController alloc] initWithViews:allViews viewsAtTap:self.viewsAtTapPoint selectedView:self.selectedView depths:depthsForViews];
             hierarchyTVC.delegate = self;
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:hierarchyTVC];
+            [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
+        };
+        
+        if (self.presentedViewController) {
+            [self resignKeyAndDismissViewControllerAnimated:NO completion:presentBlock];
+        } else {
+            presentBlock();
+        }
+    }
+}
+
+- (void)toggleNetworkTool {
+    BOOL menuModalShown = [[self presentedViewController] isKindOfClass:[UINavigationController class]];
+    menuModalShown = menuModalShown && [[[(UINavigationController *)[self presentedViewController] viewControllers] firstObject] isKindOfClass:[FLEXNetworkHistoryTableViewController class]];
+    if (menuModalShown) {
+        [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
+    } else {
+        void (^presentBlock)() = ^{
+            FLEXNetworkHistoryTableViewController *networkVC = [[FLEXNetworkHistoryTableViewController alloc] init];
+//            [FLEXGlobalsTableViewController setApplicationWindow:[[UIApplication sharedApplication] keyWindow]];
+            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:networkVC];
             [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
         };
         

@@ -64,7 +64,23 @@
     self.searchController.dimsBackgroundDuringPresentation = NO;
     self.tableView.tableHeaderView = self.searchController.searchBar;
 
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:self action:@selector(backAction)];
+    self.navigationItem.leftBarButtonItem = backButton;
+    
     [self updateTransactions];
+}
+
+- (void)backAction {
+    if (self.navigationController.viewControllers.count > 1
+        && self.navigationController.topViewController == self) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+- (void)clickedNavgationBarRightButton {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)settingsButtonTapped:(id)sender
